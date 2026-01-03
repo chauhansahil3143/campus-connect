@@ -8,9 +8,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { categories, ItemCategory, ItemStatus } from "@/lib/types";
 import { Search, Filter, X } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const Dashboard = () => {
-  const { items } = useItems();
+  const { items, markAsResolved } = useItems();
+  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<ItemCategory | "all">("all");
   const [selectedStatus, setSelectedStatus] = useState<ItemStatus | "all">("all");
@@ -158,7 +160,16 @@ const Dashboard = () => {
                   className="animate-fade-in"
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
-                  <ItemCard item={item} />
+                  <ItemCard 
+                    item={item} 
+                    onMarkResolved={(id) => {
+                      markAsResolved(id);
+                      toast({
+                        title: "Item marked as claimed!",
+                        description: "The item has been moved to resolved items.",
+                      });
+                    }}
+                  />
                 </div>
               ))}
             </div>
