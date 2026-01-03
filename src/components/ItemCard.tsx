@@ -1,7 +1,8 @@
+import { useState } from "react";
 import { LostFoundItem } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Calendar, Mail, Check, CheckCircle2 } from "lucide-react";
+import { MapPin, Calendar, Mail, Check, CheckCircle2, Copy, User } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,6 +14,15 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 
 interface ItemCardProps {
   item: LostFoundItem;
@@ -21,11 +31,22 @@ interface ItemCardProps {
 }
 
 export function ItemCard({ item, onContact, onMarkResolved }: ItemCardProps) {
-  const handleContact = () => {
-    if (onContact) {
-      onContact();
-    } else {
-      window.location.href = `mailto:${item.contactEmail}?subject=Regarding your ${item.status} item: ${item.title}`;
+  const { toast } = useToast();
+  const [isContactOpen, setIsContactOpen] = useState(false);
+
+  const handleCopyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(item.contactEmail);
+      toast({
+        title: "Email copied!",
+        description: "The email address has been copied to your clipboard.",
+      });
+    } catch (err) {
+      toast({
+        title: "Failed to copy",
+        description: "Please copy the email manually.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -102,13 +123,68 @@ export function ItemCard({ item, onContact, onMarkResolved }: ItemCardProps) {
         {/* Action Buttons */}
         {!item.isResolved && (
           <div className="flex flex-col gap-2">
-            <Button
-              onClick={handleContact}
-              className="w-full gradient-primary text-primary-foreground shadow-button hover:opacity-90 transition-opacity"
-            >
-              <Mail className="mr-2 h-4 w-4" />
-              Contact Owner
-            </Button>
+            <Dialog open={isContactOpen} onOpenChange={setIsContactOpen}>
+              <DialogTrigger asChild>
+                <Button
+                  className="w-full gradient-primary text-primary-foreground shadow-button hover:opacity-90 transition-opacity"
+                >
+                  <Mail className="mr-2 h-4 w-4" />
+                  Contact Owner
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Contact Owner</DialogTitle>
+                  <DialogDescription>
+                    Reach out to the owner about "{item.title}"
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                  {/* Owner Info */}
+                  <div className="flex items-center gap-3 rounded-lg border border-border bg-muted/50 p-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                      <User className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-foreground">{item.contactName}</p>
+                      <p className="text-sm text-muted-foreground">Item Reporter</p>
+                    </div>
+                  </div>
+
+                  {/* Email */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-foreground">Email Address</label>
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground">
+                        {item.contactEmail}
+                      </div>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={handleCopyEmail}
+                        className="shrink-0"
+                      >
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Email Link */}
+                  <a
+                    href={`mailto:${item.contactEmail}?subject=Regarding your ${item.status} item: ${item.title}`}
+                    className="flex w-full items-center justify-center gap-2 rounded-lg gradient-primary px-4 py-2.5 text-sm font-medium text-primary-foreground shadow-button transition-opacity hover:opacity-90"
+                  >
+                    <Mail className="h-4 w-4" />
+                    Open Email App
+                  </a>
+
+                  <p className="text-center text-xs text-muted-foreground">
+                    Please be respectful and provide details about the item when contacting.
+                  </p>
+                </div>
+              </DialogContent>
+            </Dialog>
             
             {onMarkResolved && (
               <AlertDialog>
