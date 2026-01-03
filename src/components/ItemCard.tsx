@@ -2,18 +2,36 @@ import { LostFoundItem } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MapPin, Calendar, Mail, Check, CheckCircle2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface ItemCardProps {
   item: LostFoundItem;
   onContact?: () => void;
+  onMarkResolved?: (id: string) => void;
 }
 
-export function ItemCard({ item, onContact }: ItemCardProps) {
+export function ItemCard({ item, onContact, onMarkResolved }: ItemCardProps) {
   const handleContact = () => {
     if (onContact) {
       onContact();
     } else {
       window.location.href = `mailto:${item.contactEmail}?subject=Regarding your ${item.status} item: ${item.title}`;
+    }
+  };
+
+  const handleMarkResolved = () => {
+    if (onMarkResolved) {
+      onMarkResolved(item.id);
     }
   };
 
@@ -81,15 +99,49 @@ export function ItemCard({ item, onContact }: ItemCardProps) {
           </div>
         </div>
 
-        {/* Contact Button */}
+        {/* Action Buttons */}
         {!item.isResolved && (
-          <Button
-            onClick={handleContact}
-            className="w-full gradient-primary text-primary-foreground shadow-button hover:opacity-90 transition-opacity"
-          >
-            <Mail className="mr-2 h-4 w-4" />
-            Contact Owner
-          </Button>
+          <div className="flex flex-col gap-2">
+            <Button
+              onClick={handleContact}
+              className="w-full gradient-primary text-primary-foreground shadow-button hover:opacity-90 transition-opacity"
+            >
+              <Mail className="mr-2 h-4 w-4" />
+              Contact Owner
+            </Button>
+            
+            {onMarkResolved && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="w-full border-success/30 text-success hover:bg-success/10 hover:text-success"
+                  >
+                    <CheckCircle2 className="mr-2 h-4 w-4" />
+                    Mark as Claimed
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Mark item as claimed?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This will mark "{item.title}" as successfully reunited with its owner. 
+                      The item will be moved to resolved items and hidden from active listings.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleMarkResolved}
+                      className="gradient-primary text-primary-foreground"
+                    >
+                      Yes, mark as claimed
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
+          </div>
         )}
 
         {item.isResolved && (
