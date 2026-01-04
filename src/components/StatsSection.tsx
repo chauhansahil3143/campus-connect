@@ -37,8 +37,8 @@ export function StatsSection({ activeLost, activeFound, resolved }: StatsSection
   return (
     <section className="py-16 bg-background">
       <div className="container mx-auto px-4">
-        <h2 className="font-display text-4xl uppercase text-center text-foreground mb-10">
-          Campus <span className="text-brutalist-animated">Statistics</span>
+        <h2 className="font-display text-4xl uppercase text-center mb-10 text-brutalist-animated">
+          Campus Statistics
         </h2>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
           <StatCard
