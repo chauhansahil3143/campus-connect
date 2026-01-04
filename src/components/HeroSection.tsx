@@ -4,40 +4,43 @@ import { Search, MapPin } from "lucide-react";
 
 export function HeroSection() {
   return (
-    <section className="relative overflow-hidden gradient-navy">
-      {/* Decorative elements */}
+    <section className="relative overflow-hidden bg-primary">
+      {/* Brutalist geometric shapes */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -right-20 -top-20 h-80 w-80 rounded-full bg-gold/10 blur-3xl" />
-        <div className="absolute -bottom-20 -left-20 h-80 w-80 rounded-full bg-gold/5 blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-96 w-96 rounded-full bg-gold/5 blur-3xl" />
+        <div className="absolute -right-10 top-10 h-40 w-40 rotate-12 border-4 border-accent opacity-20" />
+        <div className="absolute -left-10 bottom-10 h-32 w-32 -rotate-6 border-4 border-accent opacity-20" />
+        <div className="absolute top-1/3 right-1/4 h-20 w-20 rotate-45 bg-accent/10" />
+        <div className="absolute bottom-1/4 left-1/3 h-16 w-16 -rotate-12 bg-accent/5" />
       </div>
 
       <div className="container relative mx-auto px-4 py-20 md:py-28">
-        <div className="mx-auto max-w-3xl text-center">
+        <div className="mx-auto max-w-4xl text-center">
           {/* Badge */}
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-gold/30 bg-navy-light/50 px-4 py-1.5 backdrop-blur-sm">
-            <MapPin className="h-4 w-4 text-gold" />
-            <span className="text-sm font-medium text-gold font-body">BVM Engineering Campus</span>
+          <div className="mb-8 inline-flex items-center gap-2 border-2 border-accent bg-primary px-6 py-2 shadow-sm">
+            <MapPin className="h-5 w-5 text-accent" />
+            <span className="text-sm font-bold uppercase tracking-widest text-accent font-body">
+              BVM Engineering Campus
+            </span>
           </div>
 
-          {/* Title */}
-          <h1 className="mb-6 text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
+          {/* Title with animated gradient */}
+          <h1 className="mb-6 font-display text-6xl font-bold uppercase tracking-tight text-primary-foreground sm:text-7xl md:text-8xl">
             Lost something on{" "}
-            <span className="text-gold-gradient">campus?</span>
+            <span className="text-brutalist-animated">campus?</span>
           </h1>
 
           {/* Description */}
-          <p className="mb-8 text-lg text-gray-300 md:text-xl font-body">
+          <p className="mb-10 text-lg text-primary-foreground/80 md:text-xl font-body max-w-2xl mx-auto">
             BVM CampusFind helps college students reconnect with their lost belongings.
             Report lost items or help others find theirs — building a helpful campus community together.
           </p>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+          {/* CTA Buttons - Brutalist style */}
+          <div className="flex flex-col items-center justify-center gap-6 sm:flex-row">
             <Link to="/report?type=lost">
               <Button
                 size="lg"
-                className="gradient-primary min-w-[180px] text-primary-foreground shadow-button hover:opacity-90 transition-opacity font-body font-semibold"
+                className="min-w-[200px] border-2 border-primary bg-accent text-primary font-bold uppercase tracking-wide shadow-button brutalist-hover font-body"
               >
                 <Search className="mr-2 h-5 w-5" />
                 Report Lost Item
@@ -47,7 +50,7 @@ export function HeroSection() {
               <Button
                 size="lg"
                 variant="outline"
-                className="min-w-[180px] border-gold/40 text-gold bg-transparent hover:bg-gold/10 hover:text-gold font-body font-semibold"
+                className="min-w-[200px] border-2 border-accent text-accent bg-transparent hover:bg-accent hover:text-primary font-bold uppercase tracking-wide brutalist-hover font-body"
               >
                 <MapPin className="mr-2 h-5 w-5" />
                 Report Found Item
