@@ -50,7 +50,7 @@ export function Navbar() {
           {/* Desktop CTA */}
           <div className="hidden md:flex">
             <Link to="/report">
-              <Button className="border-2 border-primary bg-accent text-primary shadow-button brutalist-hover font-body font-bold uppercase tracking-wide">
+               <Button className="border-2 border-primary bg-accent text-primary hover:bg-accent/90 hover:text-primary shadow-button brutalist-hover font-body font-bold uppercase tracking-wide">
                 <Search className="mr-2 h-4 w-4" />
                 Report Item
               </Button>
