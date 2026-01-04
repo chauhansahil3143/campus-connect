@@ -4,7 +4,6 @@ import { Footer } from "@/components/Footer";
 import { ItemCard } from "@/components/ItemCard";
 import { useItems } from "@/contexts/ItemsContext";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { categories, ItemCategory, ItemStatus } from "@/lib/types";
 import { Search, Filter, X } from "lucide-react";
@@ -16,7 +15,6 @@ const Dashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<ItemCategory | "all">("all");
   const [selectedStatus, setSelectedStatus] = useState<ItemStatus | "all" | "resolved">("all");
-  const [showResolved, setShowResolved] = useState(false);
 
   const filteredItems = useMemo(() => {
     return items.filter((item) => {
@@ -24,8 +22,8 @@ const Dashboard = () => {
       if (selectedStatus === "resolved") {
         if (!item.isResolved) return false;
       } else {
-        // For other statuses, hide resolved unless showResolved is checked
-        if (!showResolved && item.isResolved) return false;
+        // For other statuses, hide resolved items
+        if (item.isResolved) return false;
         
         // Filter by status (lost/found)
         if (selectedStatus !== "all" && item.status !== selectedStatus) {
@@ -52,17 +50,16 @@ const Dashboard = () => {
 
       return true;
     });
-  }, [items, searchQuery, selectedCategory, selectedStatus, showResolved]);
+  }, [items, searchQuery, selectedCategory, selectedStatus]);
 
   const clearFilters = () => {
     setSearchQuery("");
     setSelectedCategory("all");
     setSelectedStatus("all");
-    setShowResolved(false);
   };
 
   const hasActiveFilters =
-    searchQuery || selectedCategory !== "all" || selectedStatus !== "all" || showResolved;
+    searchQuery || selectedCategory !== "all" || selectedStatus !== "all";
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -71,8 +68,10 @@ const Dashboard = () => {
         <div className="container mx-auto px-4">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-foreground">Browse Items</h1>
-            <p className="mt-1 text-muted-foreground">
+            <h1 className="text-3xl font-bold text-foreground">
+              Browse <span className="text-gold-gradient">Items</span>
+            </h1>
+            <p className="mt-1 text-muted-foreground font-body">
               Search and filter lost and found items from the campus community
             </p>
           </div>
@@ -88,7 +87,7 @@ const Dashboard = () => {
                   placeholder="Search items by title, description, or location..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
+                  className="pl-10 font-body"
                 />
               </div>
 
@@ -98,7 +97,7 @@ const Dashboard = () => {
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value as ItemCategory | "all")}
-                  className="rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground font-body focus:outline-none focus:ring-2 focus:ring-ring"
                 >
                   <option value="all">All Categories</option>
                   {categories.map((cat) => (
@@ -111,15 +110,8 @@ const Dashboard = () => {
                 {/* Status Filter */}
                 <select
                   value={selectedStatus}
-                  onChange={(e) => {
-                    const value = e.target.value as ItemStatus | "all" | "resolved";
-                    setSelectedStatus(value);
-                    // Auto-enable showResolved when "resolved" is selected
-                    if (value === "resolved") {
-                      setShowResolved(true);
-                    }
-                  }}
-                  className="rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                  onChange={(e) => setSelectedStatus(e.target.value as ItemStatus | "all" | "resolved")}
+                  className="rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground font-body focus:outline-none focus:ring-2 focus:ring-ring"
                 >
                   <option value="all">All Status</option>
                   <option value="lost">Lost</option>
@@ -129,38 +121,24 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Show Resolved Checkbox */}
-            <div className="mt-4 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Checkbox
-                  id="showResolved"
-                  checked={showResolved}
-                  onCheckedChange={(checked) => setShowResolved(checked as boolean)}
-                />
-                <label
-                  htmlFor="showResolved"
-                  className="text-sm text-muted-foreground cursor-pointer"
-                >
-                  Show resolved items
-                </label>
-              </div>
-
-              {hasActiveFilters && (
+            {/* Clear Filters */}
+            {hasActiveFilters && (
+              <div className="mt-4 flex justify-end">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={clearFilters}
-                  className="text-muted-foreground hover:text-foreground"
+                  className="text-muted-foreground hover:text-foreground font-body"
                 >
                   <X className="mr-1 h-4 w-4" />
                   Clear filters
                 </Button>
-              )}
-            </div>
+              </div>
+            )}
           </div>
 
           {/* Results Count */}
-          <p className="mb-4 text-sm text-muted-foreground">
+          <p className="mb-4 text-sm text-muted-foreground font-body">
             Showing {filteredItems.length} item{filteredItems.length !== 1 ? "s" : ""}
           </p>
 
@@ -190,13 +168,13 @@ const Dashboard = () => {
             <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border bg-muted/50 py-16">
               <Search className="mb-4 h-12 w-12 text-muted-foreground/50" />
               <p className="text-lg font-medium text-muted-foreground">No items found</p>
-              <p className="mt-1 text-sm text-muted-foreground">
+              <p className="mt-1 text-sm text-muted-foreground font-body">
                 Try adjusting your search or filters
               </p>
               {hasActiveFilters && (
                 <Button
                   variant="outline"
-                  className="mt-4"
+                  className="mt-4 font-body"
                   onClick={clearFilters}
                 >
                   Clear all filters
