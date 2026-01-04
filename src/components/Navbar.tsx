@@ -24,9 +24,8 @@ export function Navbar() {
             <div className="flex h-10 w-10 items-center justify-center border-2 border-accent bg-accent shadow-xs">
               <MapPin className="h-5 w-5 text-primary" />
             </div>
-            <span className="font-display text-2xl uppercase tracking-wide">
-              <span className="text-primary-foreground">BVM</span>
-              <span className="text-brutalist-animated">Find</span>
+            <span className="font-display text-2xl uppercase tracking-wide text-brutalist-animated">
+              BVM Find
             </span>
           </Link>
 

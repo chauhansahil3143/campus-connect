@@ -24,9 +24,8 @@ export function HeroSection() {
           </div>
 
           {/* Title with animated gradient */}
-          <h1 className="mb-6 font-display text-6xl font-bold uppercase tracking-tight text-primary-foreground sm:text-7xl md:text-8xl">
-            Lost something on{" "}
-            <span className="text-brutalist-animated">campus?</span>
+          <h1 className="mb-6 font-display text-6xl font-bold uppercase tracking-tight sm:text-7xl md:text-8xl text-brutalist-animated">
+            Lost something on campus?
           </h1>
 
           {/* Description */}
